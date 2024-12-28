@@ -1,0 +1,44 @@
+<html layout:decorate="~{layout}" xmlns:layout="http://www.w3.org/1999/xhtml">
+<div layout:fragment="content" class="container my-3">
+    <h2>Women's Category</h2>
+
+    <!-- Optional: A description of the Women's Category -->
+    <p>Explore a wide range of products for women. From fashion to accessories, find the best deals here.</p>
+
+    <!-- List of Products or Items -->
+    <div class="row">
+        <div class="col-md-4 text-center">
+            <img src="/images/product1.jpg" class="img-fluid" alt="Product 1">
+            <h5>Product 1</h5>
+            <p>Short description of Product 1.</p>
+            <a href="/product1" class="btn btn-primary">View Product</a>
+        </div>
+        <div class="col-md-4 text-center">
+            <img src="/images/product2.jpg" class="img-fluid" alt="Product 2">
+            <h5>Product 2</h5>
+            <p>Short description of Product 2.</p>
+            <a href="/product2" class="btn btn-primary">View Product</a>
+        </div>
+        <div class="col-md-4 text-center">
+            <img src="/images/product3.jpg" class="img-fluid" alt="Product 3">
+            <h5>Product 3</h5>
+            <p>Short description of Product 3.</p>
+            <a href="/product3" class="btn btn-primary">View Product</a>
+        </div>
+    </div>
+
+    <!-- Pagination (if you have multiple pages of products) -->
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            <li class="page-item">
+                <a class="page-link" href="#">Previous</a>
+            </li>
+            <li class="page-item"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item">
+                <a class="page-link" href="#">Next</a>
+            </li>
+        </ul>
+    </nav>
+</div>
+</html>
