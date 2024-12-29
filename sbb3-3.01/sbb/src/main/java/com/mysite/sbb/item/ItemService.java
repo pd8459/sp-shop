@@ -1,30 +1,36 @@
 package com.mysite.sbb.item;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ItemService {
 
     private final ItemRepository itemRepository;
 
-    @Autowired
     public ItemService(ItemRepository itemRepository) {
         this.itemRepository = itemRepository;
     }
 
-    // 상품 목록을 카테고리별로 조회
-    public Iterable<Item> getItemsByCategory(String category) {
-        return itemRepository.findByCategory(category);
+    // 모든 아이템 가져오기
+    public List<Item> findAll() {
+        return itemRepository.findAll();
     }
 
-    // 상품 추가
-    public Item addItem(Item item) {
-        return itemRepository.save(item);
+    // 카테고리에 따른 아이템 가져오기
+    public List<Item> findByCategory(String category) {
+        return itemRepository.findByCategory(category); // Repository 메서드 호출
     }
 
-    // 상품 삭제
-    public void deleteItem(Long id) {
-        itemRepository.deleteById(id);
+    // 아이템 저장
+    public void save(Item item) {
+        itemRepository.save(item);
+    }
+
+    public Item findById(Long id) {
+        Optional<Item> item = itemRepository.findById(id); // 아이템 ID로 찾기
+        return item.orElse(null); // 없으면 null 반환
     }
 }

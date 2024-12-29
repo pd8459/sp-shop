@@ -1,44 +1,54 @@
-<html layout:decorate="~{layout}" xmlns:layout="http://www.w3.org/1999/xhtml">
-<div layout:fragment="content" class="container my-3">
-    <h2>Women's Category</h2>
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Women's Category</title>
+    <style>
+        /* 아이템들을 4개씩 가로로 배치 */
+        .items-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center; /* 가운데 정렬 */
+            gap: 20px; /* 아이템 간격 설정 */
+        }
 
-    <!-- Optional: A description of the Women's Category -->
-    <p>Explore a wide range of products for women. From fashion to accessories, find the best deals here.</p>
+        /* 각 아이템의 크기 설정 */
+        .item {
+            width: 22%; /* 4개씩 가로로 배치되도록 설정, 간격 고려 */
+            text-align: center; /* 텍스트 중앙 정렬 */
+        }
 
-    <!-- List of Products or Items -->
-    <div class="row">
-        <div class="col-md-4 text-center">
-            <img src="/images/product1.jpg" class="img-fluid" alt="Product 1">
-            <h5>Product 1</h5>
-            <p>Short description of Product 1.</p>
-            <a href="/product1" class="btn btn-primary">View Product</a>
-        </div>
-        <div class="col-md-4 text-center">
-            <img src="/images/product2.jpg" class="img-fluid" alt="Product 2">
-            <h5>Product 2</h5>
-            <p>Short description of Product 2.</p>
-            <a href="/product2" class="btn btn-primary">View Product</a>
-        </div>
-        <div class="col-md-4 text-center">
-            <img src="/images/product3.jpg" class="img-fluid" alt="Product 3">
-            <h5>Product 3</h5>
-            <p>Short description of Product 3.</p>
-            <a href="/product3" class="btn btn-primary">View Product</a>
-        </div>
+        /* 이미지 크기 설정 */
+        .item img {
+            width: 100%;
+            max-width: 200px; /* 최대 이미지 크기 */
+            height: auto;
+        }
+
+        /* 반응형 디자인: 화면이 작아지면 2개씩 배치 */
+        @media (max-width: 768px) {
+            .item {
+                width: 48%; /* 2개씩 배치 */
+            }
+        }
+
+        /* 화면이 더 작아지면 1개씩 배치 */
+        @media (max-width: 480px) {
+            .item {
+                width: 100%; /* 1개씩 배치 */
+            }
+        }
+    </style>
+</head>
+<body>
+<h1>Women's Category</h1>
+<div class="items-container">
+    <div class="item" th:each="item : ${items}">
+        <!-- 링크를 이미지와 제목에 모두 적용 -->
+        <a th:href="@{'/item/' + ${item.id}}">
+            <img th:src="${item.imageUrl}" alt="Item Image"/>
+            <h3 th:text="${item.name}"></h3>
+        </a>
     </div>
-
-    <!-- Pagination (if you have multiple pages of products) -->
-    <nav aria-label="Page navigation example">
-        <ul class="pagination justify-content-center">
-            <li class="page-item">
-                <a class="page-link" href="#">Previous</a>
-            </li>
-            <li class="page-item"><a class="page-link" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item">
-                <a class="page-link" href="#">Next</a>
-            </li>
-        </ul>
-    </nav>
 </div>
+</body>
 </html>

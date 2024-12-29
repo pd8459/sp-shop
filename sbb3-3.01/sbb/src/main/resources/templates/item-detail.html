@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Item Detail</title>
+    <style>
+        /* 이미지 크기 설정 */
+        img {
+            max-width: 100%; /* 부모 요소에 맞게 이미지 크기 조정 */
+            height: auto; /* 비율에 맞춰 자동 조정 */
+        }
+
+        /* 이미지 주변 여백 조정 */
+        .item-image {
+            text-align: center; /* 이미지를 중앙 정렬 */
+            margin-bottom: 20px; /* 이미지 아래에 여백 추가 */
+        }
+    </style>
+</head>
+<body>
+<h1 th:text="${item.name}"></h1>
+<div class="item-image">
+    <img th:src="${item.imageUrl}" alt="Item Image"/>
+</div>
+<p th:text="${item.description}"></p>
+<span th:text="${item.price}"></span> <!-- 가격 -->
+</body>
+</html>

@@ -1,11 +1,10 @@
 package com.mysite.sbb.item;
 
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.List;
 
-@Repository
-public interface ItemRepository extends CrudRepository<Item, Long> {
-    // 추가적인 쿼리 메소드 작성 가능
-    // 예를 들어, 카테고리별로 상품을 조회하는 메소드
-    Iterable<Item> findByCategory(String category);
+public interface ItemRepository extends JpaRepository<Item, Long> {
+
+    // 카테고리에 따른 아이템 조회
+    List<Item> findByCategory(String category);
 }

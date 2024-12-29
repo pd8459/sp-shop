@@ -21,7 +21,7 @@ public class Item {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 1000) // 최대 1000자
     private String description;
 
     @Column(nullable = false)
