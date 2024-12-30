@@ -14,14 +14,46 @@
             text-align: center; /* 이미지를 중앙 정렬 */
             margin-bottom: 20px; /* 이미지 아래에 여백 추가 */
         }
+
+        /* 폼 스타일 */
+        .item-form {
+            margin-top: 20px;
+        }
+
+        .item-form input[type="number"] {
+            width: 60px;
+            margin-right: 10px;
+        }
+
+        .item-form button {
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
 <h1 th:text="${item.name}"></h1>
+
 <div class="item-image">
     <img th:src="${item.imageUrl}" alt="Item Image"/>
 </div>
+
 <p th:text="${item.description}"></p>
 <span th:text="${item.price}"></span> <!-- 가격 -->
+
+<!-- 장바구니 담기 폼 -->
+<div class="item-form">
+    <form th:action="@{/cart/add}" method="post">
+        <!-- 아이템 ID는 숨겨서 전송 -->
+        <input type="hidden" name="itemId" th:value="${item.id}"/>
+
+        <!-- 수량 입력 -->
+        <label for="quantity">수량:</label>
+        <input type="number" id="quantity" name="quantity" value="1" min="1" required/>
+
+        <!-- 장바구니 담기 버튼 -->
+        <button type="submit" class="btn btn-primary">장바구니에 담기</button>
+    </form>
+</div>
+
 </body>
 </html>

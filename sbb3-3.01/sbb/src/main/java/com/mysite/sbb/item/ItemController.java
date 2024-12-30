@@ -1,19 +1,25 @@
 package com.mysite.sbb.item;
 
+import com.mysite.sbb.cart.CartService;
+import com.mysite.sbb.user.SiteUser;
+import com.mysite.sbb.user.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 
 @Controller
 public class ItemController {
 
     private final ItemService itemService;
+    private final CartService cartService;
+    private final UserService userService;
 
-    public ItemController(ItemService itemService) {
+    public ItemController(ItemService itemService, CartService cartService, UserService userService) {
         this.itemService = itemService;
+        this.cartService = cartService;
+        this.userService = userService;
     }
 
     @GetMapping("/")
@@ -32,6 +38,7 @@ public class ItemController {
         itemService.save(item); // 아이템 저장
         return "redirect:/"; // 메인 페이지로 리다이렉트
     }
+
     @GetMapping("/mens-category")
     public String mensCategory(Model model) {
         model.addAttribute("items", itemService.findByCategory("Men")); // 남성 카테고리 아이템 가져오기
@@ -50,5 +57,19 @@ public class ItemController {
         Item item = itemService.findById(id); // 아이템 정보 가져오기
         model.addAttribute("item", item); // 아이템 상세 정보 모델에 추가
         return "item-detail"; // item-detail.html 반환
+    }
+
+    // 장바구니에 아이템 추가
+    @PostMapping("/item/{id}/add-to-cart")
+    public String addToCart(@PathVariable Long id, @RequestParam int quantity, Principal principal) {
+        // 현재 로그인된 사용자를 가져옵니다.
+        String username = principal.getName();
+        SiteUser user = userService.getUser(username);
+
+        // 장바구니에 아이템 추가
+        cartService.addToCart(user, id, quantity);  // itemId만 전달
+
+        // 장바구니 페이지로 리다이렉트
+        return "redirect:/cart";
     }
 }
