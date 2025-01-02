@@ -66,10 +66,28 @@ public class ItemController {
         String username = principal.getName();
         SiteUser user = userService.getUser(username);
 
+        // 아이템을 id로 조회
+        Item item = itemService.findById(id); // id로 아이템 조회
+
         // 장바구니에 아이템 추가
-        cartService.addToCart(user, id, quantity);  // itemId만 전달
+        cartService.addItemToCart(user, item, quantity);  // 아이템 객체와 수량 전달
 
         // 장바구니 페이지로 리다이렉트
-        return "redirect:/cart";
+        return "redirect:/cart";  // 장바구니 페이지로 리다이렉트
     }
+
+    @PostMapping("/update")
+    public String updateCartItemQuantity(@RequestParam("itemId") Long itemId, @RequestParam("quantity") int quantity, Principal principal) {
+        // Principal에서 현재 로그인된 사용자 정보 가져오기
+        SiteUser user = userService.getUser(principal.getName());  // 로그인된 사용자
+
+        // 카트의 상품 수량 변경
+        cartService.updateCartItemQuantity(user, itemId, quantity);  // 카트 상품 수량 변경
+
+        // 카트 페이지로 리다이렉트
+        return "redirect:/cart";  // username은 필요 없으므로 제거
+    }
+
+
+
 }

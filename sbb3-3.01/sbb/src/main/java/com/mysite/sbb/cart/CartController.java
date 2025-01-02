@@ -1,63 +1,64 @@
 package com.mysite.sbb.cart;
 
-import com.mysite.sbb.cart.Cart;
 import com.mysite.sbb.cart.CartService;
 import com.mysite.sbb.item.Item;
 import com.mysite.sbb.item.ItemService;
 import com.mysite.sbb.user.SiteUser;
 import com.mysite.sbb.user.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
 
 @Controller
 @RequestMapping("/cart")
+@RequiredArgsConstructor
 public class CartController {
 
     private final CartService cartService;
     private final UserService userService;
     private final ItemService itemService;
 
-    public CartController(CartService cartService, UserService userService, ItemService itemService) {
-        this.cartService = cartService;
-        this.userService = userService;
-        this.itemService = itemService;
-    }
+    
 
     @GetMapping
-    public String viewCart(Model model, Principal principal) {
-        // 현재 로그인된 사용자를 가져옵니다.
+    public String getCartPage(Model model, Principal principal) {
         String username = principal.getName();
         SiteUser user = userService.getUser(username);
-
-        // 사용자와 연관된 장바구니 아이템 가져오기
-        List<Cart> cartItems = cartService.getCartItems(user);
-        if (cartItems == null) {
-            cartItems = new ArrayList<>();  // null일 경우 빈 리스트로 초기화
-        }
-        model.addAttribute("cartItems", cartItems);
-        return "cart"; // cart.html 렌더링
+        model.addAttribute("cartItems", cartService.getUserCart(user));
+        return "cart";
     }
 
+    // 카트에 상품 추가
     @PostMapping("/add")
-    public String addToCart(@RequestParam Long itemId, @RequestParam int quantity, Principal principal) {
-        // 현재 로그인된 사용자를 가져옵니다.
+    public String addItemToCart(@RequestParam("itemId") Long itemId, @RequestParam("quantity") int quantity, Principal principal) {
         String username = principal.getName();
         SiteUser user = userService.getUser(username);
-
-        // 장바구니에 추가
-        cartService.addToCart(user, itemId, quantity);  // itemId만 전달
-        return "redirect:/cart";
+        Item item = itemService.findById(itemId);
+        cartService.addItemToCart(user, item, quantity);  // 카트에 상품 추가
+        return "redirect:/cart";  // 카트 페이지로 리다이렉트
     }
 
-    @PostMapping("/remove/{cartId}")
-    public String removeFromCart(@PathVariable Long cartId) {
-        // 장바구니에서 항목 제거
-        cartService.removeFromCart(cartId);
-        return "redirect:/cart";
+    // 카트에서 상품 삭제
+    @PostMapping("/remove")
+    public String removeItemFromCart(@RequestParam("itemId") Long itemId, Principal principal) {
+        String username = principal.getName();
+        SiteUser user = userService.getUser(username);
+        cartService.removeItemFromCart(user, itemId);  // 카트에서 상품 삭제
+        return "redirect:/cart";  // 카트 페이지로 리다이렉트
+    }
+
+    // 카트에서 상품 수량 변경
+    @PostMapping("/update")
+    public String updateCartItemQuantity(@RequestParam("itemId") Long itemId, @RequestParam("quantity") int quantity, Principal principal) {
+        String username = principal.getName();
+        SiteUser user = userService.getUser(username);
+        cartService.updateCartItemQuantity(user, itemId, quantity);  // 카트 상품 수량 변경
+        return "redirect:/cart";  // 카트 페이지로 리다이렉트
     }
 }
