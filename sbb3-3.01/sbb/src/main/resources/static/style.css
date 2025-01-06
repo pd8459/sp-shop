@@ -5,3 +5,29 @@ textarea {
 input[type=submit] {
 	margin-top: 10px;
 }
+
+/* 드롭다운 메뉴 숨기기 */
+.dropdown-menu {
+	display: none;
+}
+
+/* 서브 메뉴 보이게 하기 */
+.nav-item:hover .dropdown-menu {
+	display: block;
+}
+
+/* 메뉴 항목 스타일링 */
+.dropdown-item {
+	padding: 10px;
+	color: #333;
+	text-decoration: none;
+}
+
+.dropdown-item:hover {
+	background-color: #f1f1f1;
+}
+
+/* 서브 메뉴 스타일 */
+.dropdown-menu .dropdown-item {
+	padding-left: 20px;
+}
