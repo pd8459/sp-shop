@@ -1,45 +1,81 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout}" xmlns:layout="http://www.w3.org/1999/xhtml">
+
 <head>
     <title>Your Cart</title>
+    <!-- 추가적인 스타일링 필요 시 여기에 작성 -->
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            text-align: center;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #f4f4f4;
+            font-weight: bold;
+        }
+
+        form {
+            display: inline;
+        }
+
+        p {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .cart-container {
+            margin: 20px auto;
+            max-width: 800px;
+        }
+
+        .total-amount {
+            text-align: right; /* 총 금액 오른쪽 정렬 */
+        }
+    </style>
 </head>
+
 <body>
-<h1>Your Shopping Cart</h1>
+<!-- layout.html에서 제공하는 content 부분 -->
+<div layout:fragment="content" class="container cart-container">
+    <h1>Your Shopping Cart</h1>
 
-<table>
-    <thead>
-    <tr>
-        <th>Item Name</th>
-        <th>Quantity</th>
-        <th>Price</th>
-        <th>Total</th>
-        <th>Action</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="cartItem : ${cartItems}">
-        <td th:text="${cartItem.item.name}"></td>
-        <td th:text="${cartItem.quantity}"></td>
-        <td th:text="${cartItem.item.price}"></td>
-        <td th:text="${cartItem.item.price * cartItem.quantity}"></td>
-        <td>
-            <form th:action="@{/cart/remove}" method="post">
-                <input type="hidden" th:value="${cartItem.item.id}" name="itemId" />
-                <button type="submit">Remove</button>
-            </form>
-        </td>
-    </tr>
-    </tbody>
-</table>
+    <table>
+        <thead>
+        <tr>
+            <th>Item Name</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Total</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="cartItem : ${cartItems}">
+            <td th:text="${cartItem.item.name}"></td>
+            <td th:text="${cartItem.quantity}"></td>
+            <td th:text="${cartItem.item.price}"></td>
+            <td th:text="${cartItem.item.price * cartItem.quantity}"></td>
+            <td>
+                <form th:action="@{/cart/remove}" method="post">
+                    <input type="hidden" th:value="${cartItem.item.id}" name="itemId" />
+                    <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 
-<p>Total Amount: <span th:text="${totalAmount}"></span></p>
-
-<form th:action="@{/cart/add}" method="post">
-    <select name="itemId">
-        <!-- 아이템 목록을 채우는 부분 -->
-    </select>
-    <input type="number" name="quantity" min="1" required />
-    <button type="submit">Add to Cart</button>
-</form>
+    <!-- 총 금액 표시 -->
+    <p class="total-amount">Total Amount: <span th:text="${totalAmount}"></span></p>
+</div>
 </body>
+
 </html>

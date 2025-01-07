@@ -3,6 +3,8 @@ package com.mysite.sbb.item;
 import com.mysite.sbb.cart.CartService;
 import com.mysite.sbb.user.SiteUser;
 import com.mysite.sbb.user.UserService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -40,16 +42,26 @@ public class ItemController {
     }
 
     @GetMapping("/mens-category")
-    public String mensCategory(Model model) {
-        model.addAttribute("items", itemService.findByCategory("Men")); // 남성 카테고리 아이템 가져오기
+    public String mensCategory(@RequestParam(defaultValue = "0") int page, Model model) {
+        int pageSize = 10; // 한 페이지에 10개의 아이템을 보여줌
+        Page<Item> itemsPage = itemService.getItemsByCategory("Men", page, pageSize);
+        model.addAttribute("items", itemsPage.getContent()); // 아이템 목록
+        model.addAttribute("totalPages", itemsPage.getTotalPages()); // 전체 페이지 수
+        model.addAttribute("currentPage", page); // 현재 페이지 번호
         return "men-category"; // men-category.html 반환
     }
 
+
     @GetMapping("/womens-category")
-    public String womensCategory(Model model) {
-        model.addAttribute("items", itemService.findByCategory("Women")); // 여성 카테고리 아이템 가져오기
-        return "womens-category"; // women-category.html 반환
+    public String womensCategory(Model model, @RequestParam(value = "page", defaultValue = "0") int page) {
+        int pageSize = 10; // 한 페이지에 10개의 아이템을 보여줌
+        Page<Item> itemsPage = itemService.getItemsByCategory("Women", page, pageSize); // 12개씩 표시
+        model.addAttribute("items", itemsPage.getContent()); // 현재 페이지의 아이템들
+        model.addAttribute("currentPage", page); // 현재 페이지 번호
+        model.addAttribute("totalPages", itemsPage.getTotalPages()); // 전체 페이지 수
+        return "womens-category"; // womens-category.html 반환
     }
+
 
     // 아이템 상세 페이지
     @GetMapping("/item/{id}")

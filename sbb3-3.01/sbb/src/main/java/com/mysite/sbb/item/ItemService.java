@@ -1,5 +1,8 @@
 package com.mysite.sbb.item;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,10 +22,13 @@ public class ItemService {
         return itemRepository.findAll();
     }
 
-    // 카테고리에 따른 아이템 가져오기
-    public List<Item> findByCategory(String category) {
-        return itemRepository.findByCategory(category); // Repository 메서드 호출
+    // 카테고리에 따른 아이템을 페이징 처리하여 반환
+    public Page<Item> getItemsByCategory(String category, int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize); // 페이지 번호와 페이지 크기 설정
+        return itemRepository.findByCategory(category, pageable); // 페이징된 아이템 반환
     }
+
+
 
     // 아이템 저장
     public void save(Item item) {

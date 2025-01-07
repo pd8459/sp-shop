@@ -24,14 +24,26 @@ public class CartController {
     private final UserService userService;
     private final ItemService itemService;
 
-    
+
 
     @GetMapping
     public String getCartPage(Model model, Principal principal) {
         String username = principal.getName();
         SiteUser user = userService.getUser(username);
-        model.addAttribute("cartItems", cartService.getUserCart(user));
-        return "cart";
+
+        // 유저의 장바구니 항목 가져오기
+        var cartItems = cartService.getUserCart(user);
+
+        // 총 금액 계산
+        long totalAmount = (long) cartItems.stream()
+                .mapToDouble(item -> item.getItem().getPrice() * item.getQuantity())
+                .sum();
+
+        // 모델에 데이터 추가
+        model.addAttribute("cartItems", cartItems);
+        model.addAttribute("totalAmount", totalAmount);
+
+        return "cart"; // cart.html 템플릿
     }
 
     // 카트에 상품 추가
