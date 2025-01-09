@@ -43,7 +43,7 @@ public class ItemController {
 
     @GetMapping("/mens-category")
     public String mensCategory(@RequestParam(defaultValue = "0") int page, Model model) {
-        int pageSize = 10; // 한 페이지에 10개의 아이템을 보여줌
+        int pageSize = 20; // 한 페이지에 10개의 아이템을 보여줌
         Page<Item> itemsPage = itemService.getItemsByCategory("Men", page, pageSize);
         model.addAttribute("items", itemsPage.getContent()); // 아이템 목록
         model.addAttribute("totalPages", itemsPage.getTotalPages()); // 전체 페이지 수
@@ -54,7 +54,7 @@ public class ItemController {
 
     @GetMapping("/womens-category")
     public String womensCategory(Model model, @RequestParam(value = "page", defaultValue = "0") int page) {
-        int pageSize = 10; // 한 페이지에 10개의 아이템을 보여줌
+        int pageSize = 20; // 한 페이지에 10개의 아이템을 보여줌
         Page<Item> itemsPage = itemService.getItemsByCategory("Women", page, pageSize); // 12개씩 표시
         model.addAttribute("items", itemsPage.getContent()); // 현재 페이지의 아이템들
         model.addAttribute("currentPage", page); // 현재 페이지 번호
