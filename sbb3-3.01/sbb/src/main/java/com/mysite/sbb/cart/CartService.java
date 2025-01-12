@@ -2,65 +2,43 @@ package com.mysite.sbb.cart;
 
 import com.mysite.sbb.item.Item;
 import com.mysite.sbb.user.SiteUser;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class CartService {
 
-    @Autowired
-    private CartRepository cartRepository;
+    private final CartRepository cartRepository;
 
-    // 사용자의 카트 목록 반환
-    public List<Cart> getUserCart(SiteUser user) {
-        // userId로 카트 항목을 찾는 쿼리 사용
-        return cartRepository.findByUserId(user.getId());
+    // 사용자의 장바구니 항목 가져오기
+    public List<CartItem> getUserCart(SiteUser user) {
+        return cartRepository.findByUser(user); // user에 해당하는 CartItem들을 반환하는 메서드
     }
 
-    // 카트에서 특정 상품 제거
-    public void removeItemFromCart(SiteUser user, Long itemId) {
-        // SiteUser와 Item을 기준으로 카트 항목 찾기
-        Item item = new Item();  // Item 객체 생성 후 id 설정
-        item.setId(itemId);
+    // 카트에 상품 추가
+    public void addItemToCart(SiteUser user, Item item, int quantity) {
+        // 카트에 이미 있는 상품인지 확인하고, 없다면 새로운 CartItem을 추가하는 로직
+        CartItem cartItem = new CartItem(user, item, quantity);
+        cartRepository.save(cartItem);
+    }
 
-        Cart cartItem = cartRepository.findByUserAndItem(user, item);  // findByUserAndItem 호출
+    // 카트에서 상품 삭제
+    public void removeItemFromCart(SiteUser user, Long itemId) {
+        CartItem cartItem = cartRepository.findByUserAndItemId(user, itemId);
         if (cartItem != null) {
             cartRepository.delete(cartItem);
         }
     }
 
-    // 카트에 상품 추가 (기존 메서드)
-    public void addItemToCart(SiteUser user, Item item, int quantity) {
-        // 기존에 해당 상품이 이미 카트에 존재하는지 확인
-        Cart existingCart = cartRepository.findByUserAndItem(user, item);
-        if (existingCart != null) {
-            // 이미 상품이 존재하면 수량만 증가
-            existingCart.setQuantity(existingCart.getQuantity() + quantity);
-            cartRepository.save(existingCart);
-        } else {
-            // 새로 카트 항목 추가
-            Cart newCart = new Cart();
-            newCart.setUser(user);
-            newCart.setItem(item);
-            newCart.setQuantity(quantity);
-            cartRepository.save(newCart);
-        }
-    }
-
+    // 카트 상품 수량 변경
     public void updateCartItemQuantity(SiteUser user, Long itemId, int quantity) {
-        // itemId를 이용해 Item 객체를 찾기
-        Item item = new Item();
-        item.setId(itemId);
-
-        // 해당 사용자와 상품에 대한 카트 항목을 찾기
-        Cart cartItem = cartRepository.findByUserAndItem(user, item);
-
+        CartItem cartItem = cartRepository.findByUserAndItemId(user, itemId);
         if (cartItem != null) {
-            // 카트 항목이 존재하면 수량을 업데이트
             cartItem.setQuantity(quantity);
-            cartRepository.save(cartItem); // 변경된 카트 항목 저장
+            cartRepository.save(cartItem);
         }
     }
 }
