@@ -45,7 +45,51 @@
             text-align: center;
         }
     </style>
+
+    <!-- IAMPORT 스크립트 로드 -->
     <script src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
+    <script>
+        function requestPay() {
+            const IMP = window.IMP;
+            if (!IMP) {
+                alert("IAMPORT 라이브러리가 로드되지 않았습니다.");
+                return;
+            }
+
+            IMP.init('imp22747340'); // 포트원 관리자에서 발급받은 가맹점 식별코드
+
+            IMP.request_pay({
+                pg: "html5_inicis", // PG사
+                pay_method: "card", // 결제수단
+                merchant_uid: "order_" + new Date().getTime(), // 주문 번호
+                name: "테스트 결제", // 상품명
+                amount: 100, // 결제 금액
+                buyer_email: "test@example.com",
+                buyer_name: "홍길동",
+                buyer_tel: "010-1234-5678",
+                buyer_addr: "서울특별시 강남구",
+                buyer_postcode: "123-456",
+            }, function (rsp) {
+                if (rsp.success) {
+                    // 결제 성공 시 서버로 데이터 전송
+                    fetch('/checkout', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(rsp)
+                    }).then(response => {
+                        if (response.ok) {
+                            alert("결제가 완료되었습니다.");
+                            window.location.href = "/order/confirmation";
+                        } else {
+                            alert("결제 정보 저장 중 오류가 발생했습니다.");
+                        }
+                    });
+                } else {
+                    alert("결제가 실패했습니다. 에러 내용: " + rsp.error_msg);
+                }
+            });
+        }
+    </script>
 </head>
 
 <body>
@@ -83,50 +127,7 @@
     <div class="checkout-btn">
         <!-- 결제 버튼 클릭 시 requestPay 함수 호출 -->
         <button type="button" onclick="requestPay()">결제하기</button>
-
     </div>
 </div>
-
-<script>
-    function requestPay() {
-        const IMP = window.IMP; // 생략 가능
-        IMP.init('imp22747340'); // 포트원 관리자에서 발급받은 가맹점 식별코드
-
-        IMP.request_pay({
-            pg: "html5_inicis", // PG사
-            pay_method: "card", // 결제수단
-            merchant_uid: "order_" + new Date().getTime(), // 주문 번호
-            name: "주문명: 상품명", // 상품명
-            amount: 1000, // 결제 금액
-            buyer_email: "test@example.com",
-            buyer_name: "홍길동",
-            buyer_tel: "010-1234-5678",
-            buyer_addr: "서울특별시 강남구",
-            buyer_postcode: "123-456",
-        }, function (rsp) {
-            if (rsp.success) {
-                // 결제 성공 시 서버로 데이터 전송
-                fetch('/checkout', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(rsp)
-                }).then(response => {
-                    if (response.ok) {
-                        alert('결제가 완료되었습니다.');
-                        window.location.href = "/order/confirmation";
-                    } else {
-                        alert('결제 정보 저장 중 오류가 발생했습니다.');
-                    }
-                });
-            } else {
-                alert('결제가 실패했습니다. 에러 내용: ' + rsp.error_msg);
-            }
-        });
-    }
-</script>
-<script src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
-
 </body>
 </html>
