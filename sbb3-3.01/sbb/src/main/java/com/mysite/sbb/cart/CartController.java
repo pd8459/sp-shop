@@ -73,20 +73,7 @@ public class CartController {
         return "redirect:/cart";  // 카트 페이지로 리다이렉트
     }
 
-    // 결제하기 처리
-    @PostMapping("/checkout")
-    public String checkout(@RequestParam("totalAmount") long totalAmount, Principal principal, Model model) {
-        String username = principal.getName();
-        SiteUser user = userService.getUser(username);
 
-        // 유저의 장바구니 항목 가져오기
-        List<CartItem> cartItems = cartService.getUserCart(user);
 
-        // 총 결제 금액을 포함한 모델에 데이터 추가
-        model.addAttribute("cartItems", cartItems);
-        model.addAttribute("totalAmount", totalAmount);
 
-        // 결제 화면으로 이동 (포트원 결제 API 연동 페이지로 이동)
-        return "checkout"; // checkout.html 페이지로 이동
-    }
 }
