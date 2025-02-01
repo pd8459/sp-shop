@@ -24,6 +24,12 @@ public class SiteUser {
 
     private String address;
 
+    private String detailAddress;
+
+    private String extraAddress;
+
+    private String postcode;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private UserRole role;
